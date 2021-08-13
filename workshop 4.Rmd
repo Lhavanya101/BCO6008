@@ -10,5 +10,25 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ##predicting prices 
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(skimr)
+```
+```{r}
+data<-read_csv ("https://raw.githubusercontent.com/VictoriaUniversity-AU/bco6008/main/train_airbnb.csv?token=AJTU3ZKY2LCZZTMCDFSI4ODBDYLIG")
 
+skim(data)
+
+```
+
+```{r}
+set.seed(123)
+data_split<-data%>%initial_split()
+data_split
+```
+```{r}
+train<-training(data_split)
+test<-testing(data_split)
+```
 
