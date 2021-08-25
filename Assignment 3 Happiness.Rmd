@@ -1,0 +1,99 @@
+---
+title: "Assignment 3"
+author: "Lhavanya"
+date: "8/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+install.packages("tidyverse")
+install.packages("tidymodel")
+install.packages("skimr")
+install.packages("janitor")
+
+```
+
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(skimr)
+library(janitor)
+```
+
+
+
+# reading the data
+
+```{r}
+happiness <- read_csv("https://raw.githubusercontent.com/VictoriaUniversity-AU/assignment3-happiness-group9/main/world-happiness-report-2021.csv?token=AVBWTYALA5RGDKEA7X7KAJ3BFDSK4")
+```
+
+
+
+# cleaning the vairables name
+```{r}
+happiness <- happiness %>% clean_names()
+```
+
+
+
+# the main regions represented in the data set
+```{r}
+happiness%>%
+  count(regional_indicator)
+```
+
+
+
+# creating hapiness levels based on ladder scores
+
+```{r}
+happiness <- happiness %>%
+  mutate(happiness_level = case_when(
+    ladder_score <= 4 ~ "least happy",
+    ladder_score > 4 & ladder_score < 6.5 ~ "happy",
+    ladder_score >= 6.5 ~ "happiest"
+  ))
+happiness$happiness_level <- factor(happiness$happiness_level, levels = c("least happy","happy","happiest"))
+
+```
+
+
+# happiest 10 countries 
+
+```{r}
+happiest_countries <- happiness%>%
+  select(country_name,regional_indicator, ladder_score)%>%
+  arrange(desc(ladder_score))%>%
+  head(10)
+happiest_countries%>%
+  ggplot(aes(fct_reorder(country_name, ladder_score),ladder_score,fill = regional_indicator))+
+  geom_bar(stat = "identity")+
+  coord_flip()
+```
+
+
+
+# unhappiest 10 countries 
+
+```{r}
+unhappiest_countries <- happiness%>%
+  select(country_name,regional_indicator, ladder_score)%>%
+  arrange(ladder_score)%>%
+  head(10)
+unhappiest_countries%>%
+  ggplot(aes(fct_reorder(country_name, ladder_score),ladder_score, fill = regional_indicator))+
+  geom_bar(stat = "identity",)+
+  coord_flip()
+```
+
+
+
+
+
